@@ -8,47 +8,66 @@ public class GreedyAlgorithm {
 
     private final Graph unColoredGraph;
     private final int nbMaxColor;
-    private List<Integer> colors;
+    private final List<Integer> colors;
 
     public GreedyAlgorithm(int nbMaxColor, Graph graph) {
+        this.checkArguments(nbMaxColor <= 0, graph == null);
+
         this.nbMaxColor = nbMaxColor;
         this.unColoredGraph = graph;
-        this.initializeColor();
+        this.colors = this.initializeColor();
     }
 
-    public void colorGraph() {
+    private void checkArguments(boolean firstCondition, boolean secondCondition) {
+        if (firstCondition || secondCondition) throw new IllegalArgumentException("Les arguments ne sont pas valides");
+    }
 
-        // Dictionary vertex-color
+
+
+    public void  colorGraph() {
+
+
+        // Dictionnaire contenant la correspondence entre les sommets du graphe et la couleur qui lui est associé
         Map<Integer, Integer> coloredGraph = new HashMap<>();
-        //assigner la première couleur au premier sommet
-        coloredGraph.put(0, 0);
-        System.out.println("Vertex "+0 + " is colored with " + 0);
-        for (int v = 1; v < unColoredGraph.V(); v++) {
 
-            // Operation add complexité O(ln N) ou n est le nombre d'élement dans l'ensemble
+        for (int v = 0; v < unColoredGraph.V(); v++) {
+            // TreeSet : Operation insertion complexité O(ln N) ou N est le nombre d'éléments dans l'ensemble.
+            // Elements triés par ordre naturel(Arbre binaire balancé rouge noir)
             Set<Integer> colorAdjVertices = new TreeSet<>();
-            Iterable<Integer> adjVertices = unColoredGraph.adj(v);
 
+            Iterable<Integer> adjVertices = this.unColoredGraph.adj(v);
+
+            //parcours les sommets adjacents au sommet courant pour récupérer la couleur utilisée par ces sommets adjacents
             for (Integer adjVertex : adjVertices) {
-                Object adjVertexColorObject = coloredGraph.get(adjVertex);
-                if (adjVertexColorObject != null) {
-                    int adjVertexColor = Integer.parseInt(adjVertexColorObject.toString());
+                Integer adjVertexColor = coloredGraph.get(adjVertex);
+                if (adjVertexColor != null) {
                     colorAdjVertices.add(adjVertexColor);
                 }
             }
 
-            int assignedColor = checkFirstFreeColor(colorAdjVertices);
+            int assignedColor = findFirstFreeColor(colorAdjVertices);
             coloredGraph.put(v, assignedColor);
-            System.out.println("Vertex "+v + " is colored with " + assignedColor);
+            System.out.println("Vertex " + v + " is colored with " + assignedColor);
         }
 
     }
 
-    private void initializeColor() {
-        this.colors = IntStream.rangeClosed(0, nbMaxColor - 1).boxed().collect(Collectors.toList());
+    /**
+     * Créer un tableau avec les k+1 couleur nécessaire pour colorier le graphe
+     *
+     * @return le tableau avec les couleurs
+     */
+    private List<Integer> initializeColor() {
+        return IntStream.rangeClosed(0, this.nbMaxColor - 1).boxed().collect(Collectors.toList());
     }
 
-    private int checkFirstFreeColor(Set<Integer> colorAdjVertices) {
+    /**
+     * Trouve la première couleur disponible non utilisée par un sommet adjacent
+     *
+     * @param colorAdjVertices Ensemble de couleur utilisée par les sommets adjacents triée par ordre naturel
+     * @return la premiere couleur non utilisée
+     */
+    private int findFirstFreeColor(Set<Integer> colorAdjVertices) {
         int colorIdx = 0;
         for (int c : colorAdjVertices) {
             int currentColor = this.colors.get(colorIdx);
