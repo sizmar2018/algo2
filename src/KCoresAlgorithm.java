@@ -18,9 +18,9 @@ public class KCoresAlgorithm {
             }
         }
         int[] vCores = new int[g.V()];
-        ArrayList<Integer>[] vectorsByDegree = new ArrayList[maxDegree + 1];
+        HashSet<Integer>[] vectorsByDegree = new HashSet[maxDegree + 1];
         for(int i = 0; i < maxDegree + 1; i++){
-            vectorsByDegree[i] = new ArrayList<>();
+            vectorsByDegree[i] = new HashSet<>();
         }
         for(int i = 0; i < g.V(); i++){
             vectorsByDegree[g.degree(i)].add(i);
@@ -30,7 +30,7 @@ public class KCoresAlgorithm {
         for(int i = 0; i < g.V(); i++){
             int j = getMinDegree(vectorsByDegree);
             k = Math.max(j, k);
-            int v = vectorsByDegree[j].remove(vectorsByDegree[j].size()-1);
+            int v = getVertexFromSet(vectorsByDegree[j]);
             vDeleted.add(v);
             vCores[v] = k;
             vDegree[v] = 0;
@@ -46,10 +46,17 @@ public class KCoresAlgorithm {
         return vCores;
     }
 
-    private int getMinDegree(ArrayList<Integer>[] vectorsByDegree) {
+    private int getVertexFromSet(HashSet<Integer> vertexes) {
+        for (int v: vertexes){
+            return v;
+        }
+        throw new RuntimeException("Empty set");
+    }
+
+    private int getMinDegree(HashSet<Integer>[] vectorsByDegree) {
         int j = 0;
         while (j < vectorsByDegree.length){
-            if(vectorsByDegree[j].size() > 0){
+            if(!vectorsByDegree[j].isEmpty()){
                 break;
             }
             j += 1;

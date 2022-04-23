@@ -1,12 +1,16 @@
 import edu.princeton.cs.algs4.Graph;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class DegeneracyAlgorithm {
 
-    public int getKDegenerate(Graph g){
+    private final Graph g;
+
+    public DegeneracyAlgorithm(Graph graph) {
+        this.g = graph;
+    }
+
+    public int getKDegenerate(){
         int[] vDegree = new int[g.V()];
         Set<Integer> vDeleted = new HashSet<>();
         int maxDegree = Integer.MIN_VALUE;
@@ -17,10 +21,10 @@ public class DegeneracyAlgorithm {
                 maxDegree = degree;
             }
         }
-
-        ArrayList<Integer>[] vectorsByDegree = new ArrayList[maxDegree + 1];
+        int[] vCores = new int[g.V()];
+        HashSet<Integer>[] vectorsByDegree = new HashSet[maxDegree + 1];
         for(int i = 0; i < maxDegree + 1; i++){
-            vectorsByDegree[i] = new ArrayList<>();
+            vectorsByDegree[i] = new HashSet<>();
         }
         for(int i = 0; i < g.V(); i++){
             vectorsByDegree[g.degree(i)].add(i);
@@ -30,13 +34,15 @@ public class DegeneracyAlgorithm {
         for(int i = 0; i < g.V(); i++){
             int j = getMinDegree(vectorsByDegree);
             k = Math.max(j, k);
-            int v = vectorsByDegree[j].remove(vectorsByDegree[j].size()-1);
+            int v = getVertexFromSet(vectorsByDegree[j]);
+            vectorsByDegree[j].remove(v);
             vDeleted.add(v);
+            vCores[v] = k;
             vDegree[v] = 0;
             for(int w: g.adj(v)){
                 if(!vDeleted.contains(w)){
                     int wDegree = vDegree[w];
-                    vectorsByDegree[wDegree].remove(Integer.valueOf(w));
+                    vectorsByDegree[wDegree].remove(w);
                     vectorsByDegree[wDegree - 1].add(w);
                     vDegree[w] = wDegree - 1;
                 }
@@ -45,10 +51,17 @@ public class DegeneracyAlgorithm {
         return k;
     }
 
-    private int getMinDegree(ArrayList<Integer>[] vectorsByDegree) {
+    private int getVertexFromSet(HashSet<Integer> vertexes) {
+        for (int v: vertexes){
+            return v;
+        }
+        throw new RuntimeException("Empty set");
+    }
+
+    private int getMinDegree(HashSet<Integer>[] vectorsByDegree) {
         int j = 0;
         while (j < vectorsByDegree.length){
-            if(vectorsByDegree[j].size() > 0){
+            if(!vectorsByDegree[j].isEmpty()){
                 break;
             }
             j += 1;
