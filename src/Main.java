@@ -9,13 +9,19 @@ import java.nio.file.Paths;
 public class Main {
     public static void main(String[] args) {
         Graph graph = createGraph();
+        System.out.println(graph.V()+" - "+graph.E());
         DegeneracyAlgorithm degeneracyAlgorithm = new DegeneracyAlgorithm(graph);
+
+        KCoresAlgorithm kCoresAlgorithm = new KCoresAlgorithm();
+
         long startTime = System.currentTimeMillis();
         int k = degeneracyAlgorithm.getKDegenerate();
         long endTime = System.currentTimeMillis();
         long duration = (endTime - startTime);
         System.out.println("Degeneracy of the graph is: "+k);
         System.out.println("It took "+duration+" ms");
+        GreedyAlgorithm greedyAlgorithm = new GreedyAlgorithm(k+1, graph, degeneracyAlgorithm.getOrder());
+        greedyAlgorithm.colorGraph();
 //        KCoresAlgorithm kCoresAlgorithm = new KCoresAlgorithm(graph);
 //        int[] cores = kCoresAlgorithm.getCores();
 //        GreedyAlgorithm greedyAlgorithm = new GreedyAlgorithm(k+1,graph);
@@ -25,8 +31,8 @@ public class Main {
 
     private static Graph createGraph() {
         try {
-            Path path = Paths.get("facebook_combined.txt");
-            Graph graph = new Graph(4039);
+            Path path = Paths.get("RO_edges.txt");
+            Graph graph = new Graph(41773);
             BufferedReader reader = Files.newBufferedReader(path);
             String line = reader.readLine();
             while (line != null){

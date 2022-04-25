@@ -9,28 +9,25 @@ public class GreedyAlgorithm {
     private final Graph unColoredGraph;
     private final int nbMaxColor;
     private final List<Integer> colors;
+    private final List<Integer> vOrder;
 
-    public GreedyAlgorithm(int nbMaxColor, Graph graph) {
+    public GreedyAlgorithm(int nbMaxColor, Graph graph, LinkedList<Integer> vOrder) {
         this.checkArguments(nbMaxColor <= 0, graph == null);
-
         this.nbMaxColor = nbMaxColor;
         this.unColoredGraph = graph;
         this.colors = this.initializeColor();
+        this.vOrder = vOrder;
     }
 
     private void checkArguments(boolean firstCondition, boolean secondCondition) {
         if (firstCondition || secondCondition) throw new IllegalArgumentException("Les arguments ne sont pas valides");
     }
 
-
-
     public void  colorGraph() {
-
-
         // Dictionnaire contenant la correspondence entre les sommets du graphe et la couleur qui lui est associé
         Map<Integer, Integer> coloredGraph = new HashMap<>();
 
-        for (int v = 0; v < unColoredGraph.V(); v++) {
+        for (int v : vOrder) {
             // TreeSet : Operation insertion complexité O(ln N) ou N est le nombre d'éléments dans l'ensemble.
             // Elements triés par ordre naturel(Arbre binaire balancé rouge noir)
             Set<Integer> colorAdjVertices = new TreeSet<>();
