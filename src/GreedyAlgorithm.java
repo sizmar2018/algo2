@@ -13,6 +13,7 @@ public class GreedyAlgorithm {
 
     public GreedyAlgorithm(int nbMaxColor, Graph graph, LinkedList<Integer> vOrder) {
         this.checkArguments(nbMaxColor <= 0, graph == null);
+
         this.nbMaxColor = nbMaxColor;
         this.unColoredGraph = graph;
         this.colors = this.initializeColor();
@@ -23,9 +24,9 @@ public class GreedyAlgorithm {
         if (firstCondition || secondCondition) throw new IllegalArgumentException("Les arguments ne sont pas valides");
     }
 
-    public void  colorGraph() {
-        // Dictionnaire contenant la correspondence entre les sommets du graphe et la couleur qui lui est associé
-        Map<Integer, Integer> coloredGraph = new HashMap<>();
+    public Integer[] colorGraph() {
+        // Tableau contenant la correspondance entre les sommets du graphe(indices) et la couleur(valeur à des indices) qui lui est associé
+        Integer[] coloredGraph = new Integer[vOrder.size()];
 
         for (int v : vOrder) {
             // TreeSet : Operation insertion complexité O(ln N) ou N est le nombre d'éléments dans l'ensemble.
@@ -33,19 +34,20 @@ public class GreedyAlgorithm {
             Set<Integer> colorAdjVertices = new TreeSet<>();
 
             Iterable<Integer> adjVertices = this.unColoredGraph.adj(v);
-
             //parcours les sommets adjacents au sommet courant pour récupérer la couleur utilisée par ces sommets adjacents
             for (Integer adjVertex : adjVertices) {
-                Integer adjVertexColor = coloredGraph.get(adjVertex);
+                Integer adjVertexColor = coloredGraph[adjVertex];
                 if (adjVertexColor != null) {
                     colorAdjVertices.add(adjVertexColor);
                 }
             }
 
             int assignedColor = findFirstFreeColor(colorAdjVertices);
-            coloredGraph.put(v, assignedColor);
-            System.out.println("Vertex " + v + " is colored with " + assignedColor);
+            coloredGraph[v] = assignedColor;
+
         }
+
+        return coloredGraph;
 
     }
 

@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
         Graph graph = createGraph();
-        System.out.println(graph.V()+" - "+graph.E());
+        System.out.println(graph.V() + " - " + graph.E());
         DegeneracyAlgorithm degeneracyAlgorithm = new DegeneracyAlgorithm(graph);
 
         KCoresAlgorithm kCoresAlgorithm = new KCoresAlgorithm();
@@ -18,14 +20,21 @@ public class Main {
         int k = degeneracyAlgorithm.getKDegenerate();
         long endTime = System.currentTimeMillis();
         long duration = (endTime - startTime);
-        System.out.println("Degeneracy of the graph is: "+k);
-        System.out.println("It took "+duration+" ms");
-        GreedyAlgorithm greedyAlgorithm = new GreedyAlgorithm(k+1, graph, degeneracyAlgorithm.getOrder());
-        greedyAlgorithm.colorGraph();
+        System.out.println("Degeneracy of the graph is: " + k);
+        System.out.println("It took " + duration + " ms");
+        GreedyAlgorithm greedyAlgorithm = new GreedyAlgorithm(1 + k, graph, degeneracyAlgorithm.getOrder());
+
 //        KCoresAlgorithm kCoresAlgorithm = new KCoresAlgorithm(graph);
 //        int[] cores = kCoresAlgorithm.getCores();
-//        GreedyAlgorithm greedyAlgorithm = new GreedyAlgorithm(k+1,graph);
-//        greedyAlgorithm.colorGraph();
+        startTime = System.currentTimeMillis();
+        Integer[] coloredGraph = greedyAlgorithm.colorGraph();
+        endTime = System.currentTimeMillis();
+        duration = (endTime - startTime);
+        System.out.println("Greedy coloring took " + duration + " ms");
+
+
+        System.out.println("is Greedy coloring ok :"+TestGraphColoring.checkColorGraph(graph, coloredGraph));
+
     }
 
 
@@ -35,11 +44,11 @@ public class Main {
             Graph graph = new Graph(41773);
             BufferedReader reader = Files.newBufferedReader(path);
             String line = reader.readLine();
-            while (line != null){
+            while (line != null) {
                 String[] vectors = line.split(" ");
                 int v1 = Integer.parseInt(vectors[0]);
                 int v2 = Integer.parseInt(vectors[1]);
-                graph.addEdge(v1,v2);
+                graph.addEdge(v1, v2);
                 line = reader.readLine();
             }
             return graph;
