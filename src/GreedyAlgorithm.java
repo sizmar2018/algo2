@@ -55,6 +55,6 @@ public class GreedyAlgorithm {
                 return c;
             }
         }
-        throw new RuntimeException("non colorable");
+        throw new RuntimeException("Ce graphe n'est pas coloriable avec k+1 couleurs");
     }
 }
