@@ -8,15 +8,12 @@ public class GreedyAlgorithm {
 
     private final Graph unColoredGraph;
     private final int nbMaxColor;
-    private final List<Integer> colors;
     private final List<Integer> vOrder;
 
     public GreedyAlgorithm(int nbMaxColor, Graph graph, LinkedList<Integer> vOrder) {
         this.checkArguments(nbMaxColor <= 0, graph == null);
-
         this.nbMaxColor = nbMaxColor;
         this.unColoredGraph = graph;
-        this.colors = this.initializeColor();
         this.vOrder = vOrder;
     }
 
@@ -29,35 +26,20 @@ public class GreedyAlgorithm {
         Integer[] coloredGraph = new Integer[vOrder.size()];
 
         for (int v : vOrder) {
-            // TreeSet : Operation insertion complexité O(ln N) ou N est le nombre d'éléments dans l'ensemble.
-            // Elements triés par ordre naturel(Arbre binaire balancé rouge noir)
-            Set<Integer> colorAdjVertices = new TreeSet<>();
-
-            Iterable<Integer> adjVertices = this.unColoredGraph.adj(v);
+            //Tableau qui permet de savoir si une couleur(indices) est utilisé par un sommet adjacent.
+            boolean[] isUsed = new boolean[nbMaxColor];
             //parcours les sommets adjacents au sommet courant pour récupérer la couleur utilisée par ces sommets adjacents
-            for (Integer adjVertex : adjVertices) {
+            for (Integer adjVertex :  this.unColoredGraph.adj(v)) {
                 Integer adjVertexColor = coloredGraph[adjVertex];
                 if (adjVertexColor != null) {
-                    colorAdjVertices.add(adjVertexColor);
+                    isUsed[adjVertexColor] = true;
                 }
             }
-
-            int assignedColor = findFirstFreeColor(colorAdjVertices);
+            int assignedColor = findFirstFreeColor(isUsed);
             coloredGraph[v] = assignedColor;
 
         }
-
         return coloredGraph;
-
-    }
-
-    /**
-     * Créer un tableau avec les k+1 couleur nécessaire pour colorier le graphe
-     *
-     * @return le tableau avec les couleurs
-     */
-    private List<Integer> initializeColor() {
-        return IntStream.rangeClosed(0, this.nbMaxColor - 1).boxed().collect(Collectors.toList());
     }
 
     /**
@@ -66,15 +48,13 @@ public class GreedyAlgorithm {
      * @param colorAdjVertices Ensemble de couleur utilisée par les sommets adjacents triée par ordre naturel
      * @return la premiere couleur non utilisée
      */
-    private int findFirstFreeColor(Set<Integer> colorAdjVertices) {
-        int colorIdx = 0;
-        for (int c : colorAdjVertices) {
-            int currentColor = this.colors.get(colorIdx);
-            if (currentColor != c) {
-                return currentColor;
+    private int findFirstFreeColor(boolean[] colorAdjVertices) {
+
+        for (int c = 0; c < this.nbMaxColor; c++) {
+            if (!colorAdjVertices[c]) {
+                return c;
             }
-            colorIdx++;
         }
-        return this.colors.get(colorIdx);
+        throw new RuntimeException("non colorable");
     }
 }
