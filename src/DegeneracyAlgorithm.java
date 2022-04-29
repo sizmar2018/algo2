@@ -51,8 +51,4 @@ public class DegeneracyAlgorithm {
     public LinkedList<Integer> getOrder() {
         return vOrder;
     }
-
-    public static void main(String[] args) {
-
-    }
 }

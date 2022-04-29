@@ -47,6 +47,7 @@ public class Main {
             if(nbVertexInFile){
                 String line = reader.readLine();
                 nbVertex = Integer.parseInt(line);
+                line = reader.readLine();
             }
             Graph graph = new Graph(nbVertex);
             String line = reader.readLine();

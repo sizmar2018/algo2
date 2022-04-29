@@ -39,8 +39,4 @@ public class KCoresAlgorithm {
         }
         return vCores;
     }
-
-    public static void main(String[] args) {
-
-    }
 }
