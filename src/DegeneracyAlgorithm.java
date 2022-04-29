@@ -1,12 +1,11 @@
 import edu.princeton.cs.algs4.Graph;
-import edu.princeton.cs.algs4.In;
 
-import java.util.*;
+import java.util.LinkedList;
 
 public class DegeneracyAlgorithm {
 
     private final Graph G;
-    public LinkedList<Integer> vOrder = new LinkedList<>();
+    public LinkedList<Integer> vOrder;
 
     public DegeneracyAlgorithm(Graph graph) {
         this.G = graph;
@@ -14,17 +13,18 @@ public class DegeneracyAlgorithm {
 
     public int getKDegenerate(){
         int[] vDegree = new int[G.V()];
+        this.vOrder = new LinkedList<>();
         boolean[] vDeleted = new boolean[G.V()];
-        int sigma = (int) Double.POSITIVE_INFINITY;
+        int nbVertexDeleted = 0;
 
+        int k = (int) Double.POSITIVE_INFINITY;
         for (int i = 0; i < G.V(); i++){
             vDegree[i] = G.degree(i);
-            if(G.degree(i) < sigma){
-                sigma = G.degree(i);
+            if(G.degree(i) < k){
+                k = G.degree(i);
             }
         }
-        int nbVertexDeleted = 0;
-        int k = sigma;
+
         while (nbVertexDeleted != G.V()){
             boolean noVertexDeleted = true;
             for (int i = 0; i < G.V(); i++){
@@ -50,5 +50,9 @@ public class DegeneracyAlgorithm {
 
     public LinkedList<Integer> getOrder() {
         return vOrder;
+    }
+
+    public static void main(String[] args) {
+
     }
 }

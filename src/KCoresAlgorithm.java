@@ -1,25 +1,22 @@
 import edu.princeton.cs.algs4.Graph;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
 public class KCoresAlgorithm {
 
     public int[] getCores(Graph G){
+
         int[] vCores = new int[G.V()];
         int[] vDegree = new int[G.V()];
         boolean[] vDeleted = new boolean[G.V()];
-        int sigma = (int) Double.POSITIVE_INFINITY;
+        int k = (int) Double.POSITIVE_INFINITY;
 
         for (int i = 0; i < G.V(); i++){
             vDegree[i] = G.degree(i);
-            if(G.degree(i) < sigma){
-                sigma = G.degree(i);
+            if(G.degree(i) < k){
+                k = G.degree(i);
             }
         }
+
         int nbVertexDeleted = 0;
-        int k = sigma;
         while (nbVertexDeleted != G.V()){
             boolean noVertexDeleted = true;
             for (int i = 0; i < G.V(); i++){
@@ -43,4 +40,7 @@ public class KCoresAlgorithm {
         return vCores;
     }
 
+    public static void main(String[] args) {
+
+    }
 }

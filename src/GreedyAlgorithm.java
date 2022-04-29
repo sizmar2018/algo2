@@ -57,4 +57,8 @@ public class GreedyAlgorithm {
         }
         throw new RuntimeException("Ce graphe n'est pas coloriable avec k+1 couleurs");
     }
+
+    public static void main(String[] args) {
+
+    }
 }
